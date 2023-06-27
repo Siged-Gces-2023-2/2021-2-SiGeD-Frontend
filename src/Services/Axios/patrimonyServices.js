@@ -8,39 +8,29 @@ export async function getPatrimonio(url, startModal) {
     if (error.response?.status === 500) {
       startModal('O tempo da sua sessão expirou, faça o login novamente');
     } else if (error.response?.status !== 401) {
-      startModal(
-        'Não foi possível obter a lista de patrimonio, tente novamente mais tarde.',
-      );
+      startModal('Não foi possível obter a lista de patrimonio, tente novamente mais tarde.');
     }
-    console.error(
-      `An unexpected error ocourred while retrieving the Patrimonio list.${error}`,
-    );
+    console.error(`An unexpected error ocourred while retrieving the Patrimonio list.${error}`);
   }
   return false;
 }
 
 export async function createPatrimonio(name, description, startModal) {
   try {
-    const response = await APIPatrimonio.post('Patrimonio', {
+    const response = await APIPatrimonio.post('patrimony', {
       name,
       description,
     });
     if (response.data.status) {
-      startModal(
-        'Preencha todos os campos para poder criar um novo patrimonio',
-      );
+      startModal('Preencha todos os campos para poder criar um novo patrimonio');
     }
   } catch (error) {
     if (error.response.status === 500) {
       startModal('O tempo da sua sessão expirou, faça o login novamente');
     } else if (error.response.status !== 401) {
-      startModal(
-        'Não foi possível criar a nova lotação, tente novamente mais tarde.',
-      );
+      startModal('Não foi possível criar a nova lotação, tente novamente mais tarde.');
     }
-    console.error(
-      `An unexpected error ocourred while creating a new workspace.${error}`,
-    );
+    console.error(`An unexpected error ocourred while creating a new workspace.${error}`);
   }
 }
 

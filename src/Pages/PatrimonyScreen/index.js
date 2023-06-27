@@ -13,7 +13,7 @@ import { useProfileUser } from '../../Context';
 
 const PatrimonyScreen = () => {
   const { token, startModal } = useProfileUser();
-  const [word, setWord] = useState('');
+  const [word, setWord] = useState();
   const [filterPatrimonios, setFilterPatrimonios] = useState([]);
   const [patrimonios, setPatrimonios] = useState([]);
   const [statusModal, setStatusModal] = useState(false);
@@ -21,12 +21,11 @@ const PatrimonyScreen = () => {
   const toggleModal = () => setStatusModal(!statusModal);
 
   const getPatrimoniosFromApi = async () => {
-    try {
-      const response = await getPatrimonio(startModal);
-      setPatrimonios(response.data);
-    } catch (error) {
-      console.error(error);
-    }
+    await getPatrimonio('patrimony', startModal)
+      .then((response) => setPatrimonios(response.data))
+      .catch((error) => {
+        console.error(`An unexpected error ocourred while getting categories.${error}`);
+      });
   };
 
   useEffect(() => {
@@ -73,7 +72,7 @@ const PatrimonyScreen = () => {
       SearchWord={word}
       setWord={setWord}
       ListType={listPatrimonios()}
-      redirectTo="/patrimonios"
+      redirectTo="/patrimonio"
     >
       <TableHeader>
         <TableTitle width={24}>
@@ -89,19 +88,7 @@ const PatrimonyScreen = () => {
         </TableTitle>
         <TableTitle width={2} />
       </TableHeader>
-      {statusModal && (
-        <ModalComp
-          show={statusModal}
-          type="Patrimônios"
-          operation="Novo"
-          idName=""
-          idDescription=""
-          idColor="#000000"
-          getContent={getPatrimoniosFromApi}
-          handleClose={toggleModal}
-          createContent={createPatrimonio}
-        />
-      )}
+      { statusModal ? <ModalComp show={statusModal} type="Patrimônios" operation="Nova " idName="" idDescription="" idColor="#000000" getContent={getPatrimoniosFromApi} handleClose={toggleModal} createContent={createPatrimonio} /> : null }
     </GenericListScreen>
   );
 };
