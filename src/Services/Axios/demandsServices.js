@@ -337,7 +337,7 @@ export async function DemandUploadFile(
       startModal('O tempo da sua sessão expirou, faça o login novamente');
     } else {
       // eslint-disable-next-line no-undef
-      startModal('Erro ao anexar PDF.');
+      startModal('O arquivo ultrapassou o limite de 5MB.');
     }
   }
 }
