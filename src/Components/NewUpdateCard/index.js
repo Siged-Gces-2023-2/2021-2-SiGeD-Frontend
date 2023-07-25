@@ -17,7 +17,7 @@ const NewUpdateCard = ({
   demand, getDemandApi, changeState, setChangeState,
 }) => {
   const [description, setDescription] = useState('');
-  const [visibilityRestriction, setVisibilityRestriction] = useState(true);
+  const [visibilityRestriction, setVisibilityRestriction] = useState(false);
   const [important, setImportant] = useState(false);
   const [uploadFile, setUploadFile] = useState('');
   const [openModal, setOpenModal] = useState(false);
@@ -81,7 +81,6 @@ const NewUpdateCard = ({
                 (
                   <Checkbox
                     value={visibilityRestriction}
-                    defaultChecked
                     onClick={() => setVisibilityRestriction(!visibilityRestriction)}
                     inputProps={{ 'aria-label': 'Checkbox A' }}
                     style={{ color: `${colors.navHeaders}` }}
