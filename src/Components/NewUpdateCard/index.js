@@ -24,6 +24,9 @@ const NewUpdateCard = ({
   const { user, startModal } = useProfileUser();
 
   const submit = () => {
+    if (!description.trim()) {
+      return;
+    }
     createDemandUpdate(user.name, user.sector, user._id, description,
       visibilityRestriction, demand._id, important, startModal);
     getDemandApi();
