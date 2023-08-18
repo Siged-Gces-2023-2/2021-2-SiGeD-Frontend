@@ -17,7 +17,7 @@ export async function getPatrimonio(url, startModal) {
 
 export async function createPatrimonio(name, description, startModal) {
   try {
-    const response = await APIPatrimonio.post('patrimony', {
+    const response = await APIPatrimonio.post('patrimony/create', {
       name,
       description,
     });
