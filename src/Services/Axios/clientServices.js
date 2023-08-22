@@ -17,7 +17,7 @@ export async function getClients(url, startModal) {
 
 export async function getClientData(id, startModal) {
   try {
-    const response = await APIClients.get(`clients/${id}`);
+    const response = await APIClients.get(`/clients/${id}`);
     return response;
   } catch (error) {
     if (error.response?.status === 500) {
@@ -54,7 +54,7 @@ export async function postClient(
   selectedFeatures, startModal, userContext, baseImage,
 ) {
   try {
-    const response = await APIClients.post('clients/create', {
+    const response = await APIClients.post('/clients/create', {
       name: inputName,
       email: inputEmail,
       cpf: inputCpf,
@@ -173,7 +173,7 @@ export const createFeature = async (
   name, description, color, startModal,
 ) => {
   try {
-    const res = await APIClients.post('feature/create', {
+    const res = await APIClients.post('/feature/create', {
       name,
       description,
       color,
@@ -196,7 +196,7 @@ export const updateFeature = async (
   name, description, color, id, startModal,
 ) => {
   try {
-    const res = await APIClients.put(`feature/update/${id}`, {
+    const res = await APIClients.put(`/feature/update/${id}`, {
       name,
       description,
       color,
@@ -231,7 +231,7 @@ export const deleteFeature = async (id, startModal) => {
 
 export async function createWorkspace(name, description, startModal) {
   try {
-    const response = await APIClients.post('lotacao/create', {
+    const response = await APIClients.post('/lotacao/create', {
       name,
       description,
     });
@@ -239,9 +239,9 @@ export async function createWorkspace(name, description, startModal) {
       startModal('Preencha todos os campos para poder criar uma nova lotação');
     }
   } catch (error) {
-    if (error.response.status === 500) {
+    if (error.response && error.response.status === 500) {
       startModal('O tempo da sua sessão expirou, faça o login novamente');
-    } else if (error.response.status !== 401) {
+    } else if (error.response && error.response.status !== 401) {
       startModal('Não foi possível criar a nova lotação, tente novamente mais tarde.');
     }
     console.error(`An unexpected error ocourred while creating a new workspace.${error}`);
@@ -252,7 +252,7 @@ export const updateWorkspace = async (
   name, description, id, startModal,
 ) => {
   try {
-    const res = await APIClients.put(`lotacao/update/${id}`, {
+    const res = await APIClients.put(`/lotacao/update/${id}`, {
       name,
       description,
     });
