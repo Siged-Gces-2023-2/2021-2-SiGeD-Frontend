@@ -25,6 +25,20 @@ export const validatePassword = (pass) => {
   return false;
 };
 
+export const validateStringCpf = (cpf) => {
+  if (cpf.length === 14) {
+    return true;
+  }
+  return false;
+};
+
+export const validateStringTel = (tel) => {
+  if (tel.length >= 10) {
+    return true;
+  }
+  return false;
+};
+
 export const confirmPassword = (pass1, pass2) => {
   if (pass2 === pass1) {
     return true;
