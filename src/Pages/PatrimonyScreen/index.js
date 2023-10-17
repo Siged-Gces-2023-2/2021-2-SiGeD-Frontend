@@ -10,6 +10,7 @@ import {
   getPatrimonio, createPatrimonio, updatePatrimonio, deletePatrimonio,
 } from '../../Services/Axios/patrimonyServices';
 import { useProfileUser } from '../../Context';
+import generatePatrimonyPDF from '../../Components/PdfGenerator';
 
 const PatrimonyScreen = () => {
   const { token, startModal } = useProfileUser();
@@ -21,6 +22,7 @@ const PatrimonyScreen = () => {
   const toggleModal = () => setStatusModal(!statusModal);
 
   const generatePDF = () => {
+    generatePatrimonyPDF(patrimonios);
   };
 
   const getPatrimoniosFromApi = async () => {
