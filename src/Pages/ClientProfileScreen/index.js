@@ -10,7 +10,7 @@ import RedirectListButton from '../../Components/RedirectButton';
 import DropdownComponent from '../../Components/DropdownComponent';
 import {
   Main, RightBox, RightBoxMain, TitleH, SearchDiv, FilterDiv,
-  HeaderDiv, ListDiv, ButtonContainer, ContainerDiv, styles,
+  HeaderDiv, ListDiv, ButtonContainer, ContainerDiv, styles, Button,
 } from './Style';
 import { DropdownField } from '../ListDemandsScreen/Style';
 import { DropDiv, ContentBox } from '../../Components/GenericListScreen/Style';
@@ -21,6 +21,7 @@ import { getSectors } from '../../Services/Axios/sectorServices';
 import { useProfileUser } from '../../Context';
 import colors from '../../Constants/colors';
 import ClientHistory from '../../Components/ClientHistory';
+import { AllDemandsPerClient } from '../../Utils/reports/printDemandReport';
 
 const ClientProfileScreen = () => {
   const [sectors, setSectors] = useState([]);
@@ -45,7 +46,7 @@ const ClientProfileScreen = () => {
   const [clientFeatures, setClientFeatures] = useState([]);
   const [clientFeaturesID, setClientFeaturesID] = useState([]);
   const { id } = useParams();
-  const { startModal } = useProfileUser();
+  const { user, startModal } = useProfileUser();
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -209,6 +210,11 @@ const ClientProfileScreen = () => {
                           setWord={(value) => setWord(value)}
                         />
                       </SearchDiv>
+                      <Button onClick={() => AllDemandsPerClient(
+                        client._id, demands, user, startModal,
+                      )}>
+                        Gerar Relatório
+                      </Button>
                     </DropDiv>
                     <FilterDiv>
                       <DropdownField width="35%">
