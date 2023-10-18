@@ -327,4 +327,95 @@ const AllDemandsReport = async (demandsList, users, startModal, filters) => {
   return (null);
 };
 
-export { DemandReport, AllDemandsReport, DemandStatistics };
+const AllDemandsPerClient = async (clientID, demandsList, users, startModal) => {
+  pdfMake.vfs = pdfFonts.pdfMake.vfs;
+  const date = moment.parseZone(new Date()).local(true).format('DD/MM/YYYY');
+  const filteredDemandsList = demandsList.filter((demand) => demand.clientID === clientID);
+  const demandsFilterList = await Promise.all(filteredDemandsList.map(async (demand) => {
+    const demandData = await getDemandData(demand._id, startModal);
+    const clientData = await getClientData(demandData.clientID, startModal)
+      .then((response) => response.data);
+    const userData = await getUser(`users/${demandData.userID}`, startModal)
+      .then((response) => response.data);
+    const clientsFeatures = await getClientFeatures(clientData.features)
+      .then((response) => response.data);
+    const sectors = await getSectors(startModal)
+      .then((response) => response.data);
+    const updates = [];
+    demandData.updateList.map((element) => {
+      const typeField = element;
+      typeField.type = 'update';
+
+      if (users.role === 'admin' || !element.visibilityRestriction) {
+        updates.push(element);
+      } else if (element.visibilityRestriction && element.usersSector === users.sector) {
+        updates.push(element);
+      }
+
+      return null;
+    });
+
+    demandData.sectorHistory.map((element) => {
+      const typeField = element;
+      typeField.type = 'sector';
+      for (let i = 0; i < sectors.length; i += 1) {
+        if (sectors[i]._id === element.sectorID) {
+          typeField.sectorName = sectors[i].name;
+          break;
+        }
+      }
+      updates.push(element);
+
+      return null;
+    });
+
+    updates.sort((a, b) => {
+      if (a.createdAt > b.createdAt) {
+        return 1;
+      }
+      return -1;
+    });
+
+    return [
+      demandData, clientData, clientsFeatures,
+      updates, userData,
+    ];
+  }));
+
+  const document = {
+    content: [
+      { text: 'Divisão de Proteção à Saúde do Servidor - DPSS', style: 'header' },
+      { text: '\nRelatório de Demandas\n\n', style: 'subTitle' },
+      { columns: [{ text: [{ text: 'Usuário:  ', style: 'title' }, { text: `${users.name}`, style: 'leftAlign' }] }, { text: `Data: ${date}`, style: 'dateStyle' }] },
+      demandsFilterList.map((el) => (
+        [
+          { text: '\n\n' },
+          { text: [{ text: `Demanda: ${el[0].name}`, style: 'demandTitle' }] },
+          {
+            table: {
+              widths: ['*', '*'],
+              body: [
+                [{ text: [{ text: 'Status:  ', style: 'title' }, `${el[0].open ? 'Aberta' : 'Concluída'}`], colSpan: 2 }, {}],
+                [{ text: [{ text: 'Usuário:  ', style: 'title' }, ` ${el[4]?.name}`], colSpan: 2 }, {}],
+                [{ text: [{ text: 'Categorias:  ', style: 'title' }, `${splitList(el[0].categoryID)}`], colSpan: 2 }, {}],
+                [{ text: [{ text: 'Processos:  ', style: 'title' }, `${el[0].process}`], colSpan: 2 }, {}],
+                [{ colSpan: 1, text: [{ text: 'Cliente: ', style: 'title' }, `${el[1].name}`] },
+                  { colSpan: 1, text: [{ text: 'Característica: ', style: 'title' }, `${el[2].length === 0 ? '~Não possui' : splitList(el[2])}`] }],
+                [{ text: 'Atualizações', style: 'subTitleLeft', colSpan: 2 }, {}],
+                ...updatesList(el[3]),
+              ],
+            },
+          },
+        ]
+      )),
+    ],
+  };
+
+  pdfMake.createPdf(docDefinitions(document.content, defaultStyles, documentstyles)).print();
+
+  return (null);
+};
+
+export {
+  DemandReport, AllDemandsReport, AllDemandsPerClient, DemandStatistics,
+};

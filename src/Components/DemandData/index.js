@@ -1,22 +1,27 @@
 import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import moment from 'moment-timezone';
-import { FaPrint } from 'react-icons/fa';
+import { FaPrint, FaFilePdf } from 'react-icons/fa';
 import {
   DemandCard, DemandTitle, ClientName, SectorName, ProcessNumber,
   DemandCreatedAt, CategoryField, CategoryName, Icon, Button,
 } from './Style';
 import colors from '../../Constants/colors';
-import { DemandReport } from '../../Utils/reports/printDemandReport';
+import { getDemandsWithClientsNames } from '../../Services/Axios/demandsServices';
+import { AllDemandsPerClient, DemandReport } from '../../Utils/reports/printDemandReport';
 import { useProfileUser } from '../../Context';
 
 const DemandData = ({ demand, sectors }) => {
-  const { user, startModal } = useProfileUser();
+  const { token, user, startModal } = useProfileUser();
   const sectorName = sectors?.filter((sectorByID) => (sectorByID._id
     === demand.sectorHistory.at(-1).sectorID));
 
   const renderDemandCategories = () => (demand.categoryID?.map((category) => (
     <CategoryName color={category.color}>{category.name}</CategoryName>
   )));
+  const [query] = useState('');
+  const [demands, setDemands] = useState([]);
+  const getDemandsFromApi = () => getDemandsWithClientsNames(`clientsNames?open=${query}`, startModal);
 
   const styles = {
     demandCard: {
@@ -34,17 +39,37 @@ const DemandData = ({ demand, sectors }) => {
     },
   };
 
+  useEffect(async () => {
+    if (token && user) {
+      const result = await Promise.all([
+        getDemandsFromApi()]);
+      setDemands(result[0].data);
+    }
+  }, [token, user]);
+
   return (
     <DemandCard
       as={Link}
       to={`/visualizar/${demand._id}`}
       style={styles.demandCard}
     >
-      <Button onClick={() => DemandReport(demand._id, user, startModal)}>
-        <Icon color="#000">
-          <FaPrint />
-        </Icon>
-      </Button>
+      <abbr title="Imprimir relatório dessa demanda">
+        <Button onClick={() => DemandReport(demand._id, user, startModal)}>
+          <Icon color="#000">
+            <FaPrint />
+          </Icon>
+        </Button>
+      </abbr>
+
+      <abbr title="Imprimir relatório de todas as demandas desse cliente">
+        <Button onClick={() => AllDemandsPerClient(
+          demand.clientID, demands, user, startModal,
+        )}>
+          <Icon color="#000">
+            <FaFilePdf />
+          </Icon>
+        </Button>
+      </abbr>
 
       <DemandTitle>
         {demand.name}
