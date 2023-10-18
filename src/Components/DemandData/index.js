@@ -53,19 +53,23 @@ const DemandData = ({ demand, sectors }) => {
       to={`/visualizar/${demand._id}`}
       style={styles.demandCard}
     >
-      <Button onClick={() => DemandReport(demand._id, user, startModal)}>
-        <Icon color="#000">
-          <FaPrint />
-        </Icon>
-      </Button>
+      <abbr title="Imprimir relatório dessa demanda">
+        <Button onClick={() => DemandReport(demand._id, user, startModal)}>
+          <Icon color="#000">
+            <FaPrint />
+          </Icon>
+        </Button>
+      </abbr>
 
-      <Button onClick={() => AllDemandsPerClient(
-        demand.clientID, demands, user, startModal,
-      )}>
-        <Icon color="#000">
-          <FaFilePdf />
-        </Icon>
-      </Button>
+      <abbr title="Imprimir relatório de todas as demandas desse cliente">
+        <Button onClick={() => AllDemandsPerClient(
+          demand.clientID, demands, user, startModal,
+        )}>
+          <Icon color="#000">
+            <FaFilePdf />
+          </Icon>
+        </Button>
+      </abbr>
 
       <DemandTitle>
         {demand.name}

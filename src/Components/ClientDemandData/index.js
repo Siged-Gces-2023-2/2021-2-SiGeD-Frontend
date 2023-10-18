@@ -25,11 +25,13 @@ const ClientDemandData = ({ demand, sectors, style }) => {
 
   return (
     <DemandDiv onClick={() => history.push(`/visualizar/${demand._id}`)} style={style}>
-      <Button onClick={() => DemandReport(demand._id, user, startModal)}>
-        <Icon color="#000">
-          <FaPrint />
-        </Icon>
-      </Button>
+      <abbr title="Imprimir relatório dessa demanda">
+        <Button onClick={() => DemandReport(demand._id, user, startModal)}>
+          <Icon color="#000">
+            <FaPrint />
+          </Icon>
+        </Button>
+      </abbr>
       <DemandTitle>
         {demand.name}
       </DemandTitle>
