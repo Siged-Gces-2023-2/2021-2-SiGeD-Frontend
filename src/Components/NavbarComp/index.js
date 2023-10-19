@@ -105,6 +105,11 @@ const NavbarComp = () => {
                         Demanda por Cliente
                       </Nav.Link>
                     </NavDropdown.Item>
+                    <NavDropdown.Item>
+                      <Nav.Link as={Link} to="/estatisticas/caracteristica" style={{ color: 'black' }}>
+                        Demanda por Caracteristicas
+                      </Nav.Link>
+                    </NavDropdown.Item>
                   </NavDropdown>
                   <Nav.Link as={Link} to="/cargos" style={styles.navbarText}>
                     Cargos
