@@ -12,11 +12,10 @@ import {
 } from '../Style';
 import { getSectors } from '../../../Services/Axios/sectorServices';
 import { useProfileUser } from '../../../Context';
-import getCategoriesFromApiService from '../utils/services';
-import { getClients } from '../../../Services/Axios/clientServices';
+import { getClients, getFeatures } from '../../../Services/Axios/clientServices';
 import activeClient from '../utils/alternateClient';
 import { DemandStatistics } from '../../../Utils/reports/printDemandReport';
-import StatisctsFilters from '../Filters';
+import StatisctsFilters from './style';
 
 const StatisticScreen = () => {
   const { token, user, startModal } = useProfileUser();
@@ -24,7 +23,6 @@ const StatisticScreen = () => {
   const [sectorActive, setSectorActive] = useState('Todos');
   const [sectorID, setSectorID] = useState('');
   const [categoryStatistics, setCategoryStatistics] = useState([]);
-  const [categories, setCategories] = useState(['Todas']);
   const [categoryID, setCategoryID] = useState('');
   const [categoryActive, setCategoryActive] = useState('Todas');
   const [initialDate, setInitialDate] = useState(moment('2021-01-01').format('YYYY-MM-DD'));
@@ -33,6 +31,7 @@ const StatisticScreen = () => {
   const [clientList, setClientList] = useState([]);
   const [active, setActive] = useState('Todas');
   const [query, setQuery] = useState('all');
+  const [features, setFeatures] = useState(['Todas']);
 
   const getSectorsFromApi = async () => {
     await getSectors(startModal)
@@ -43,20 +42,19 @@ const StatisticScreen = () => {
 
   useEffect(() => {
     if (categoryActive !== 'Todas') {
-      const results = categories.find((element) => element.name === categoryActive);
+      const results = features.find((element) => element.name === categoryActive);
       setCategoryID(results._id);
     } else {
       setCategoryID(null);
     }
   }, [categoryActive]);
 
-  const getCategoriesFromApi = async () => {
-    try {
-      const res = await getCategoriesFromApiService(startModal);
-      setCategories([...categories, ...res]);
-    } catch (error) {
-      console.log(error);
-    }
+  const getFeaturesFromApi = async () => {
+    await getFeatures('features', startModal)
+      .then((response) => setFeatures(response.data))
+      .catch((error) => {
+        console.error(`An unexpected error ocourred while getting features.${error}`);
+      });
   };
 
   useEffect(() => {
@@ -92,7 +90,8 @@ const StatisticScreen = () => {
   useEffect(() => {
     if (user && token) {
       getSectorsFromApi();
-      getCategoriesFromApi();
+      getFeaturesFromApi();
+      console.log('CARACTERISTICAS: ', features);
       getCategoriesStatistics(null);
     }
   }, [token, user]);
@@ -125,7 +124,7 @@ const StatisticScreen = () => {
       {user ? (
         <Container>
           <TopDiv>
-            <Title>Estatísticas - Demandas por Categoria</Title>
+            <Title>Estatísticas - Demandas por Característica</Title>
             <FiltersDiv>
               <SearchDiv>
                 <StatisctsFilters
@@ -133,7 +132,7 @@ const StatisticScreen = () => {
                   setClientID={setClientID}
                   setCategoryActive={setCategoryActive}
                   setSectorActive={setSectorActive}
-                  categories={categories}
+                  categories={features}
                   sectors={sectors}
                   clientList={clientList}
                   initialDate={initialDate}
