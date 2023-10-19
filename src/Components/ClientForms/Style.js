@@ -11,6 +11,12 @@ export const ClientFormsColumnText = styled.div`
     flex-wrap: wrap;
     justify-content: space-between;
     overflow: auto;
+    
+  ::-webkit-scrollbar-thumb {
+    background-color: #495057;    
+    border-radius: 20px;       
+  }
+
     @media(max-width: 750px){
         align-items: center;
         width: 90%;

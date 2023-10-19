@@ -9,9 +9,11 @@ const ModalMessage = ({
       <Modal.Title>Alerta</Modal.Title>
     </Modal.Header>
     <Modal.Body>
-      <p>
-        {message}
-      </p>
+      {message.split('\n').map((msg, index) => (
+        <p key={index}>
+          {msg}
+        </p>
+      ))}
     </Modal.Body>
   </Modal>
 );
