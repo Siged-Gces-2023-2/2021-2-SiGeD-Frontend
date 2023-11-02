@@ -62,7 +62,7 @@ const StatisticBySectors = () => {
 
   const getSectorStatistics = async (idCategory) => {
     await getDemandsStatistics(
-      `statistic/sector?isDemandActive=${query}}&idSector=${sectorID}&idCategory=${idCategory}&initialDate=${initialDate}&finalDate=${finalDate}&idClients=${clientID}`,
+      `statistic/sector?isDemandActive=${query}&idSector=${sectorID}&idCategory=${idCategory}&initialDate=${initialDate}&finalDate=${finalDate}&idClients=${clientID}`,
       startModal,
     )
       .then((response) => {
@@ -93,17 +93,6 @@ const StatisticBySectors = () => {
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    if (active === 'Inativas') {
-      setQuery(false);
-    } else if (active === 'Ativas') {
-      setQuery(true);
-    } else {
-      setQuery(null);
-    }
-    console.log(query);
-  }, [active]);
 
   useEffect(() => {
     if (user && token) {
@@ -159,6 +148,7 @@ const StatisticBySectors = () => {
                   setInitialDate={setInitialDate}
                   setFinalDate={setFinalDate}
                   finalDate={finalDate}
+                  setQuery={setQuery}
                 />
               </SearchDiv>
             </FiltersDiv>
