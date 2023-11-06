@@ -20,13 +20,13 @@ const DemandsDescription = ({
   setDemandDate,
 }) => {
   const onProcessChange = (value, index) => {
-    const processes = [...process];
-    let element = processes[index];
-    element = value;
-
-    processes[index] = element;
-
-    setProcess(processes);
+    if (/^\d*$/.test(value)) {
+      const processes = [...process];
+      let element = processes[index];
+      element = value;
+      processes[index] = element;
+      setProcess(processes);
+    }
   };
 
   const onDeleteValue = (index) => {
