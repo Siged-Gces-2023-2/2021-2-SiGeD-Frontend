@@ -4,12 +4,13 @@ import GenericListScreen from '../../Components/GenericListScreen';
 import DataList from '../../Components/DataList';
 import ModalComp from '../../Components/ModalComp';
 import {
-  TableHeader, TableTitle, P, Bar,
+  TableHeader, TableTitle, P, Bar, Button,
 } from './Style';
 import {
   getPatrimonio, createPatrimonio, updatePatrimonio, deletePatrimonio,
 } from '../../Services/Axios/patrimonyServices';
 import { useProfileUser } from '../../Context';
+import generatePatrimonyPDF from '../../Components/PdfGenerator';
 
 const PatrimonyScreen = () => {
   const { token, startModal } = useProfileUser();
@@ -20,12 +21,17 @@ const PatrimonyScreen = () => {
 
   const toggleModal = () => setStatusModal(!statusModal);
 
+  const generatePDF = () => {
+    generatePatrimonyPDF(patrimonios);
+  };
+
   const getPatrimoniosFromApi = async () => {
-    await getPatrimonio('patrimony', startModal)
-      .then((response) => setPatrimonios(response.data))
-      .catch((error) => {
-        console.error(`An unexpected error ocourred while getting categories.${error}`);
-      });
+    try {
+      const response = await getPatrimonio('patrimony', startModal);
+      setPatrimonios(response.data);
+    } catch (error) {
+      console.error(`An unexpected error occurred while getting categories.${error}`);
+    }
   };
 
   useEffect(() => {
@@ -65,31 +71,49 @@ const PatrimonyScreen = () => {
   }
 
   return (
-    <GenericListScreen
-      ButtonTitle="Novo Patrimônio"
-      ButtonFunction={toggleModal}
-      PageTitle="Patrimônios"
-      SearchWord={word}
-      setWord={setWord}
-      ListType={listPatrimonios()}
-      redirectTo="/patrimonio"
-    >
-      <TableHeader>
-        <TableTitle width={24}>
-          <P>Nome</P>
-        </TableTitle>
-        <Bar />
-        <TableTitle width={50}>
-          <P>Descrição</P>
-        </TableTitle>
-        <Bar />
-        <TableTitle width={24}>
-          <P>Ult. Atualização</P>
-        </TableTitle>
-        <TableTitle width={2} />
-      </TableHeader>
-      { statusModal ? <ModalComp show={statusModal} type="Patrimônios" operation="Nova " idName="" idDescription="" idColor="#000000" getContent={getPatrimoniosFromApi} handleClose={toggleModal} createContent={createPatrimonio} /> : null }
-    </GenericListScreen>
+    <>
+      <GenericListScreen
+        ButtonTitle="Novo Patrimônio"
+        ButtonFunction={toggleModal}
+        PageTitle="Patrimônios"
+        SearchWord={word}
+        setWord={setWord}
+        ListType={listPatrimonios()}
+        redirectTo="/patrimonio"
+      >
+        <TableHeader>
+          <TableTitle width={24}>
+            <P>Nome</P>
+          </TableTitle>
+          <Bar />
+          <TableTitle width={50}>
+            <P>Descrição</P>
+          </TableTitle>
+          <Bar />
+          <TableTitle width={24}>
+            <P>Ult. Atualização</P>
+          </TableTitle>
+          <TableTitle width={2} />
+        </TableHeader>
+        {statusModal ? (
+          <ModalComp
+            show={statusModal}
+            type="Patrimônios"
+            operation="Nova "
+            idName=""
+            idDescription=""
+            idColor="#000000"
+            getContent={getPatrimoniosFromApi}
+            handleClose={toggleModal}
+            createContent={createPatrimonio}
+          />
+        ) : null}
+      </GenericListScreen>
+
+      <div style={{ position: 'fixed', bottom: '10px', right: '6%' }}>
+        <Button onClick={generatePDF}>Gerar PDF</Button>
+      </div>
+    </>
   );
 };
 
