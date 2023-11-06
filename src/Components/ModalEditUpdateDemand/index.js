@@ -21,11 +21,13 @@ const ModalEditUpdateDemand = ({
   setChangeState,
   changeState,
   important,
+  treatment,
 }) => {
   const [updateDescription, setUpdateDescription] = useState(description);
   const [updateVisibility, setUpdateVisibility] = useState(true);
   const { user, startModal } = useProfileUser();
   const [editedImportant, seteditedImportant] = useState(important);
+  const [editedTreatment, setEditTreatment] = useState(treatment);
 
   const styles = {
     checkBox: {
@@ -44,7 +46,7 @@ const ModalEditUpdateDemand = ({
   const editUpdate = async () => {
     updateDemandUpdate(
       name, userSector, user._id, updateDescription, demandID,
-      updateDemandID, updateVisibility, editedImportant, startModal,
+      updateDemandID, updateVisibility, editedImportant, editedTreatment, startModal,
     );
     setUpdateVisibility(true);
     handleClose();
@@ -97,6 +99,22 @@ const ModalEditUpdateDemand = ({
                   )
                 }
                 label="Importante"
+              />
+            </CheckboxContainer>
+            <CheckboxContainer>
+              <FormControlLabel
+                control={
+                  (
+                    <Checkbox
+                      value={editedTreatment}
+                      defaultChecked={treatment}
+                      onClick={() => setEditTreatment(!editedTreatment)}
+                      inputProps={{ 'aria-label': 'Checkbox A' }}
+                      style={styles.checkBox}
+                    />
+                  )
+                }
+                label="Atendimento"
               />
             </CheckboxContainer>
           </CheckboxDiv>

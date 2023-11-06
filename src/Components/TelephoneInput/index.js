@@ -53,7 +53,7 @@ const TelephoneInput = ({
           outline: '0',
         }}
       />
-      <ErrorMessage input={value} title={title} />
+      <ErrorMessage input={value} title="telefone" />
     </Container>
   );
 };

@@ -239,6 +239,7 @@ export async function createDemandUpdate(
   visibilityRestriction,
   id,
   important,
+  treatment,
   startModal,
 ) {
   try {
@@ -249,6 +250,7 @@ export async function createDemandUpdate(
       description,
       visibilityRestriction,
       important,
+      treatment,
     });
     if (response.data.status) {
       startModal('Preencha o campo de descrição da atualização para ser possível o envio.');
@@ -324,6 +326,7 @@ export async function DemandUploadFile(
     dataArray.append('description', info.description);
     dataArray.append('important', info.important);
     dataArray.append('visibility', info.visibility);
+    dataArray.append('treatment', info.treatment);
 
     dataArray.append('file', file);
 
@@ -351,6 +354,7 @@ export async function updateDemandUpdate(
   updateListID,
   visibilityRestriction,
   important,
+  treatment,
   startModal,
 ) {
   try {
@@ -362,6 +366,7 @@ export async function updateDemandUpdate(
       visibilityRestriction,
       updateListID,
       important,
+      treatment,
     });
     if (response.data.status) {
       startModal('Não foi possível editar a atualização.');
