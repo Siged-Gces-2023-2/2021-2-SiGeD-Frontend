@@ -2,8 +2,8 @@ import styled from 'styled-components';
 import colors from '../../Constants/colors';
 
 export const H1 = styled.h1`
-    font-size: '1.5rem';
-    font: 'Montserrat';
+  font-size: 1.5rem;
+  font-family: Montserrat;
 `;
 
 export const TableHeader = styled.div`
@@ -14,7 +14,7 @@ export const TableHeader = styled.div`
   flex-direction: row;
   align-items: center;
 
-  @media(max-width: 750px){
+  @media (max-width: 750px) {
     visibility: hidden;
   }
 `;
@@ -23,7 +23,7 @@ export const P = styled.div`
   color: ${colors.secondary};
   font-size: 2vh;
 
-  @media(max-width: 750px){
+  @media (max-width: 750px) {
     font-size: 1.6vh;
   }
 `;
@@ -39,5 +39,19 @@ export const TableTitle = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  width: ${(props) => `${props.width}%`}
+  width: ${(props) => `${props.width}%`};
+`;
+
+export const Button = styled.div`
+  background-color: ${colors.primary};
+  color: ${colors.secondary};
+  height: 5vh;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+
 `;

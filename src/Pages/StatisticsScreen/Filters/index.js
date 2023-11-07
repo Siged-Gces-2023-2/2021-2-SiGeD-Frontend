@@ -19,6 +19,7 @@ export default function StatisctsFilters({
   initialDate,
   setInitialDate,
   finalDate,
+  setQuery,
 }) {
   return (
     <>
@@ -27,7 +28,16 @@ export default function StatisctsFilters({
           Demandas:
         </TextLabel>
         <DropdownComponent
-          OnChangeFunction={(Option) => setActive(Option.target.value)}
+          OnChangeFunction={(Option) => {
+            setActive(Option.target.value);
+            if (Option.target.value === 'Inativas') {
+              setQuery(false);
+            } else if (Option.target.value === 'Ativas') {
+              setQuery(true);
+            } else {
+              setQuery(null);
+            }
+          }}
           style={styles.dropdownComponentStyle}
           optionStyle={{
             backgroundColor: `${colors.secondary}`,

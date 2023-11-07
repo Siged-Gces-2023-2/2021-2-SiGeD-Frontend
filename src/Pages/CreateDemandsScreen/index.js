@@ -113,8 +113,8 @@ const CreateDemandsScreen = () => {
         setDescription={setDescription}
         demandDate={demandDate}
         setDemandDate={setDemandDate}
-        submit={handleShow}
         cancel={cancel}
+        submit={handleShow}
         buttomName="Cadastrar" />
       <RightBoxComponent
         clientID={clientID}

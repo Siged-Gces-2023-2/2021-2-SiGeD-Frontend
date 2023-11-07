@@ -1,10 +1,15 @@
 import moment from 'moment-timezone';
 import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
+import { FaPrint } from 'react-icons/fa';
 import {
   DemandDiv, SectorNameDiv, CategoriesDiv, CategoryTag, styles,
 } from './Style';
-import { DemandTitle, ProcessNumber, DemandCreatedAt } from '../DemandData/Style';
+import {
+  DemandTitle, ProcessNumber, DemandCreatedAt, Button, Icon,
+} from '../DemandData/Style';
+import { DemandReport } from '../../Utils/reports/printDemandReport';
+import { useProfileUser } from '../../Context';
 
 const ClientDemandData = ({ demand, sectors, style }) => {
   const history = useHistory();
@@ -13,12 +18,20 @@ const ClientDemandData = ({ demand, sectors, style }) => {
   const renderDemandCategories = () => (demand.categoryID?.map((category) => (
     <CategoryTag color={category.color}>{category.name}</CategoryTag>
   )));
+  const { user, startModal } = useProfileUser();
 
   useEffect(() => {
   }, [sectorName]);
 
   return (
     <DemandDiv onClick={() => history.push(`/visualizar/${demand._id}`)} style={style}>
+      <abbr title="Imprimir relatório dessa demanda">
+        <Button onClick={() => DemandReport(demand._id, user, startModal)}>
+          <Icon color="#000">
+            <FaPrint />
+          </Icon>
+        </Button>
+      </abbr>
       <DemandTitle>
         {demand.name}
       </DemandTitle>
