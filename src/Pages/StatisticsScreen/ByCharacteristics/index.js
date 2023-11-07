@@ -166,7 +166,7 @@ const StatisticScreen = () => {
       { user ? (
         <Container>
           <TopDiv>
-            <Title>Estatísticas - Demandas por Cliente</Title>
+            <Title>Estatísticas - Demandas por Caracteristica</Title>
             <FiltersDiv>
               <SearchDiv>
                 <StatisctsFilters
