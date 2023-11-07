@@ -231,6 +231,56 @@ const DemandStatistics = async (payload) => {
   return (null);
 };
 
+const DemandStatisticsFeature = async (payload) => {
+  const {
+    statisticsData, active, clientID,
+    featureActive, initialDate, finalDate,
+    startModal, sectorActive,
+  } = payload;
+
+  let clientData = {
+    name: 'Todos',
+  };
+  if (clientID) {
+    clientData = await getClientData(clientID, startModal)
+      .then((response) => response.data);
+  }
+
+  pdfMake.vfs = pdfFonts.pdfMake.vfs;
+  const date = moment.parseZone(new Date()).local(true).format('DD/MM/YYYY');
+
+  const document = {
+    content: [
+      { text: 'Divisão de Proteção à Saúde do Servidor - DPSS', style: 'header' },
+      { text: '\nRelatório de Demandas por Caracteristica\n\n', style: 'subTitle' },
+      { text: `Data de geração: ${date}`, style: 'dateStyle' },
+      { text: '\nFiltros aplicados:\n', style: 'filterTitle' },
+      { text: `Status: ${active === 'Todas' ? 'Ativas e Inativas' : active}`, style: 'filterStyle' },
+      { text: `Cliente: ${clientData.name}`, style: 'filterStyle' },
+      { text: `Caracteristica: ${featureActive || ''}`, style: 'filterStyle' },
+      { text: `Setor: ${sectorActive || ''}`, style: 'filterStyle' },
+      { text: `Data inicial: ${moment.parseZone(new Date(initialDate)).local(true).format('DD/MM/YYYY')}`, style: 'filterStyle' },
+      { text: `Data final: ${moment.parseZone(new Date(finalDate)).local(true).format('DD/MM/YYYY')}`, style: 'filterStyle' },
+      { text: '\n\n' },
+      {
+        table: {
+          widths: ['*', '*'],
+          body: [
+            [{ text: [{ text: 'Caracteristica', style: 'demandTitle' }], colSpan: 1 }, { text: [{ text: 'Total de demandas', style: 'demandTitle' }], colSpan: 1 }],
+            ...statisticsData.map((data) => (
+              [{ text: [{ text: `${data?.name}`, style: 'title' }] }, { text: [{ text: `${data?.total}`, style: 'title' }] }]
+            )),
+          ],
+        },
+      },
+    ],
+  };
+
+  pdfMake.createPdf(docDefinitions(document.content, defaultStyles, documentstyles)).print();
+
+  return (null);
+};
+
 const AllDemandsReport = async (demandsList, users, startModal, filters) => {
   const {
     initialDate, finalDate, demandStatus, currentCategory,
@@ -327,4 +377,6 @@ const AllDemandsReport = async (demandsList, users, startModal, filters) => {
   return (null);
 };
 
-export { DemandReport, AllDemandsReport, DemandStatistics };
+export {
+  DemandReport, AllDemandsReport, DemandStatistics, DemandStatisticsFeature,
+};
