@@ -26,6 +26,7 @@ import CargosScreen from '../Pages/ListCargos';
 import RegisterCargosScreen from '../Pages/RegisterCargos';
 import WorkspaceListScreen from '../Pages/WorkplaceScreen';
 import StatisticByCategory from '../Pages/StatisticsScreen/ByCategory';
+import StatisticByCharacteristics from '../Pages/StatisticsScreen/ByCharacteristics';
 import StatisticBySectors from '../Pages/StatisticsScreen/BySectors';
 import StatisticClientScreen from '../Pages/StatisticsScreen/ByClients';
 import PatrimonyScreen from '../Pages/PatrimonyScreen';
@@ -65,6 +66,7 @@ const OtherRoutes = () => {
               <Route path="/nao-autorizado" exact component={UnauthorizedScreen} />
               <Route path="/recuperar-senha" exact component={RecoverPasswordScreen} />
               <Route path="/estatisticas/categoria" exact component={StatisticByCategory} />
+              <Route path="/estatisticas/caracteristica" exact component={StatisticByCharacteristics} />
               <Route path="/estatisticas/setor" exact component={StatisticBySectors} />
               <Route path="/estatisticas/cliente" exact component={StatisticClientScreen} />
               <Route path="/lotacoes/" exact component={WorkspaceListScreen} />
