@@ -9,7 +9,7 @@ const styles = {
     fontWeight: 'bold',
     width: '35vh',
     height: '5vh',
-    borderRadius: '15px',
+    borderRadius: '7px',
     border: '1px solid white',
     boxShadow: '2px 2px lightgray',
     margin: '5px',
