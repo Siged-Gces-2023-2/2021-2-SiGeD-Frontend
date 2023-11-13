@@ -48,10 +48,19 @@ export const Button = styled.div`
   height: 5vh;
   display: flex;
   flex-direction: row;
+  justify-content: center;
   align-items: center;
   padding: 8px 16px;
   border: none;
-  border-radius: 14px;
   cursor: pointer;
+  position: absolute;
+  top: 25.5%;
+  right: 240px;
+  height: 50px;
+  border-radius: 15px;
 
+  @media(max-width: 750px){
+    top: 16%;
+    right: 38%;
+  }
 `;
