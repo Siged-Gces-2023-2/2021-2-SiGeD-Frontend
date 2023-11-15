@@ -27,7 +27,7 @@ const LoginScreen = () => {
       }
     >
       <Center>
-        <h1 style={styles.access}>Entrar</h1>
+        <h1 style={styles.access}>Acesse sua conta</h1>
 
         <LoginInput
           title="Usuário"

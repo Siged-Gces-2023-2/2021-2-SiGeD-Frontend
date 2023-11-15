@@ -5,7 +5,7 @@ import {
   BarChart, CartesianGrid, XAxis, Bar, YAxis,
 } from 'recharts';
 import moment from 'moment';
-import { getDemandsStatistics } from '../../../Services/Axios/demandsServices';
+import { getClientByDemands } from '../../../Services/Axios/demandsServices';
 import {
   Main, Title, Container, Card, TopDiv, MiddleDiv,
   FiltersDiv, SearchDiv, Button,
@@ -14,7 +14,7 @@ import { getSectors } from '../../../Services/Axios/sectorServices';
 import { useProfileUser } from '../../../Context';
 import { getClients, getFeatures } from '../../../Services/Axios/clientServices';
 import activeClient from '../utils/alternateClient';
-import { DemandStatistics } from '../../../Utils/reports/printDemandReport';
+import { DemandStatisticsFeature } from '../../../Utils/reports/printDemandReport';
 import StatisctsFilters from './style';
 
 const StatisticScreen = () => {
@@ -22,16 +22,17 @@ const StatisticScreen = () => {
   const [sectors, setSectors] = useState(['Todos']);
   const [sectorActive, setSectorActive] = useState('Todos');
   const [sectorID, setSectorID] = useState('');
-  const [categoryStatistics, setCategoryStatistics] = useState([]);
-  const [categoryID, setCategoryID] = useState('');
-  const [categoryActive, setCategoryActive] = useState('Todas');
+  const [featureID, setFeatureID] = useState('');
+  const [features, setFeatures] = useState(['Todas']);
+  const [featureActive, setFeatureActive] = useState('Todas');
   const [initialDate, setInitialDate] = useState(moment('2021-01-01').format('YYYY-MM-DD'));
   const [finalDate, setFinalDate] = useState(moment().format('YYYY-MM-DD'));
   const [clientID, setClientID] = useState(null);
   const [clientList, setClientList] = useState([]);
   const [active, setActive] = useState('Todas');
   const [query, setQuery] = useState('all');
-  const [features, setFeatures] = useState(['Todas']);
+  const [clientGraphData, setClientGraphData] = useState([]);
+  const [clientOptions, setClientOptions] = useState([]);
 
   const getSectorsFromApi = async () => {
     await getSectors(startModal)
@@ -40,22 +41,38 @@ const StatisticScreen = () => {
       });
   };
 
-  useEffect(() => {
-    if (categoryActive !== 'Todas') {
-      const results = features.find((element) => element.name === categoryActive);
-      setCategoryID(results._id);
-    } else {
-      setCategoryID(null);
-    }
-  }, [categoryActive]);
+  const getClientsFromApi = async () => {
+    await getClients(`clients?active=${null}`, startModal)
+      .then((response) => {
+        const clientSelectArray = activeClient(response.data).map((client) => (
+          {
+            name: client.name,
+            _id: client._id,
+            features: client.features,
+          }));
+        setClientList(clientSelectArray);
+      });
+  };
 
   const getFeaturesFromApi = async () => {
     await getFeatures('features', startModal)
-      .then((response) => setFeatures(response.data))
+      .then((response) => {
+        const allFeatures = ['Todas', ...response.data];
+        setFeatures(allFeatures);
+      })
       .catch((error) => {
-        console.error(`An unexpected error ocourred while getting features.${error}`);
+        console.error(`An unexpected error ocurred while getting features.${error}`);
       });
   };
+
+  useEffect(() => {
+    if (featureActive !== 'Todas') {
+      const results = features.find((element) => element.name === featureActive);
+      setFeatureID(results._id);
+    } else {
+      setFeatureID(null);
+    }
+  }, [featureActive]);
 
   useEffect(() => {
     if (active === 'Inativas') {
@@ -65,7 +82,6 @@ const StatisticScreen = () => {
     } else {
       setQuery(null);
     }
-    console.log(query);
   }, [active]);
 
   useEffect(() => {
@@ -77,64 +93,90 @@ const StatisticScreen = () => {
     }
   }, [sectorActive]);
 
-  const getCategoriesStatistics = async (idSector) => {
-    await getDemandsStatistics(
-      `statistic/category?isDemandActive=${query}&idSector=${idSector}&idCategory=${categoryID}&initialDate=${initialDate}&finalDate=${finalDate}&idClients=${clientID}`,
+  const getFeaturesStatistics = async (idFeature) => {
+    const clientsGraph = [];
+    const featureTotals = []; // Objeto para rastrear os totais das features
+
+    await getClientByDemands(
+      `statistic/feature?isDemandActive=${query}&idSector=${sectorID}&idFeature=${idFeature}&initialDate=${initialDate}&finalDate=${finalDate}&idClients=${clientID}`,
       startModal,
-    )
-      .then((response) => {
-        setCategoryStatistics(response?.data);
+    ).then((response) => {
+      response.data?.map((item) => {
+        clientList.map((client) => {
+          if (item._id === client?._id) {
+            client.features.map((feature) => {
+              const nomeFeature = features.find((element) => element._id === feature)?.name;
+              const colorFeature = features.find((element) => element._id === feature)?.color;
+
+              if ((idFeature != null && idFeature === feature) || (featureActive === 'Todas')) {
+                if (nomeFeature) {
+                  if (!featureTotals[nomeFeature]) {
+                    featureTotals[nomeFeature] = {
+                      name: nomeFeature,
+                      total: 0,
+                      features: client.features,
+                      color: colorFeature,
+                    };
+                  }
+                  featureTotals[nomeFeature].total += item.demandas;
+                }
+              }
+              return true;
+            });
+          }
+          return true;
+        });
+        return true;
       });
+      // Converte o objeto em um array
+      clientsGraph.push(...Object.values(featureTotals));
+      setClientGraphData(clientsGraph);
+    });
   };
 
   useEffect(() => {
     if (user && token) {
+      getClientsFromApi();
       getSectorsFromApi();
       getFeaturesFromApi();
-      console.log('CARACTERISTICAS: ', features);
-      getCategoriesStatistics(null);
     }
   }, [token, user]);
 
   useEffect(() => {
-    getCategoriesStatistics(sectorID);
-  }, [query, sectorID, categoryID, finalDate, initialDate, clientID]);
+    getFeaturesStatistics(featureID);
+  }, [query, sectorID, featureID, finalDate, initialDate, clientID]);
 
   useEffect(() => {
-    getCategoriesStatistics(sectorID);
-  }, [query, finalDate, initialDate]);
-
-  const getClientsFromApi = async () => {
-    await getClients(`clients?active=${null}`, startModal)
-      .then((response) => {
-        const clientSelectArray = activeClient(response.data).map((client) => (
-          {
-            label: client.name,
-            value: client._id,
-          }));
-        clientSelectArray.unshift({ label: 'Todos', value: null });
-        setClientList(clientSelectArray);
-      });
-  };
-
-  useEffect(() => getClientsFromApi(), []);
+    if (clientList.length > 0) {
+      getFeaturesStatistics(null);
+    }
+    const clientsOptionsArr = clientList.map((client) => ({
+      value: client._id,
+      label: client.name,
+    }));
+    clientsOptionsArr.unshift({
+      value: null,
+      label: 'Todos',
+    });
+    setClientOptions(clientsOptionsArr);
+  }, [clientList]);
 
   return (
     <Main>
-      {user ? (
+      { user ? (
         <Container>
           <TopDiv>
-            <Title>Estatísticas - Demandas por Característica</Title>
+            <Title>Estatísticas - Demandas por Caracteristica</Title>
             <FiltersDiv>
               <SearchDiv>
                 <StatisctsFilters
                   setActive={setActive}
                   setClientID={setClientID}
-                  setCategoryActive={setCategoryActive}
+                  setFeatureActive={setFeatureActive}
                   setSectorActive={setSectorActive}
-                  categories={features}
+                  features={features}
                   sectors={sectors}
-                  clientList={clientList}
+                  clientList={clientOptions}
                   initialDate={initialDate}
                   setInitialDate={setInitialDate}
                   setFinalDate={setFinalDate}
@@ -143,7 +185,7 @@ const StatisticScreen = () => {
               </SearchDiv>
             </FiltersDiv>
             {
-              categoryStatistics.length > 0
+              clientGraphData.length > 0
               && (
                 <div style={{
                   display: 'flex',
@@ -151,19 +193,16 @@ const StatisticScreen = () => {
                   justifyContent: 'flex-end',
                   margin: '10px 0',
                 }}>
-                  <Button onClick={() => DemandStatistics({
-                    statisticsData: categoryStatistics.map((category) => ({
-                      name: category.categories[0].name,
-                      total: category.demandas,
-                    })),
+                  <Button onClick={() => DemandStatisticsFeature({
+                    statisticsData: clientGraphData,
                     active,
+                    featureActive,
                     initialDate,
+                    sectorActive,
                     clientID,
                     finalDate,
                     startModal,
-                    sectorActive,
-                    categoryActive,
-                    reportType: 'CATEGORY',
+                    reportType: 'FEATURE',
                   })}>
                     Baixar relatório
                     <BsDownload />
@@ -176,7 +215,7 @@ const StatisticScreen = () => {
             <Card>
               <ResponsiveContainer height="80%" width="100%">
                 <BarChart
-                  data={categoryStatistics}
+                  data={clientGraphData}
                   margin={{
                     top: 5,
                     right: 10,
@@ -185,32 +224,32 @@ const StatisticScreen = () => {
                   }}
                 >
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="categories[0].name" hide />
+                  <XAxis dataKey="name" hide />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="demandas">
-                    {categoryStatistics?.map((entry, index) => (
-                      <Cell key={index} fill={entry?.categories[0]?.color} />
+                  <Bar dataKey="total">
+                    {clientGraphData?.map((entry, index) => (
+                      <Cell key={index} fill={entry.color} />
                     ))}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
               <div className="legenda">
-                {categoryStatistics.map((entry, index) => (
+                {clientGraphData.map((entry, index) => (
                   <div
                     key={`cell-${index}`}
                     style={{
                       display: 'flex', alignItems: 'center', margin: '0px 4px', fontSize: '1.5rem',
                     }}>
-                    <div style={{ width: '20px', height: '10px', backgroundColor: entry.categories[0].color }} />
-                    <span style={{ margin: '0px 5px' }}>{entry.categories[0].name}</span>
+                    <div style={{ width: '20px', height: '10px', backgroundColor: entry.color }} />
+                    <span style={{ margin: '0px 5px' }}>{entry.name}</span>
                   </div>
                 ))}
               </div>
             </Card>
           </MiddleDiv>
         </Container>
-      ) : <h1>Carregando...</h1>}
+      ) : <h1>Carregando...</h1> }
     </Main>
   );
 };

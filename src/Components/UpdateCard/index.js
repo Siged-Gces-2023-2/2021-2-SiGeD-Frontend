@@ -137,6 +137,13 @@ const UpdateCard = ({
               </LockIcon>
             )
             : null }
+          { update.treatment
+            ? (
+              <HighPriorityIcon>
+                <FcHighPriority style={styles.iconStyle} />
+              </HighPriorityIcon>
+            )
+            : null }
           { fileID.length === 1 ? (
             <EditIcon
               onClick={() => { setFileStatus(true); }}
@@ -183,6 +190,7 @@ const UpdateCard = ({
         setChangeState={setChangeState}
         changeState={changeState}
         important={update.important}
+        treatment={update.treatment}
       />
       <ConfirmDemandModal
         show={confirm}

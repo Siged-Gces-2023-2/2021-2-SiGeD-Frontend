@@ -10,10 +10,10 @@ import Dropdown from '../utils/Dropdown';
 export default function StatisctsFilters({
   setActive,
   setClientID,
-  setCategoryActive,
+  setFeatureActive,
   setSectorActive,
   setFinalDate,
-  categories,
+  features,
   sectors,
   clientList,
   initialDate,
@@ -55,11 +55,11 @@ export default function StatisctsFilters({
         </TextLabel>
         <div style={{ display: 'flex', width: '100%' }}>
           <Select
-            onChange={(e) => setCategoryActive(e.value)}
+            onChange={(e) => setFeatureActive(e.value)}
             defaultValue="Todas"
-            options={categories.map((categorie) => ({
-              value: categorie.name || categorie,
-              label: categorie.name || categorie,
+            options={features.map((feature) => ({
+              value: feature.name || feature,
+              label: feature.name || feature,
             }))}
             styles={customStyles}
             placeholder="Nome da caracteristica"

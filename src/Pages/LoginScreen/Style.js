@@ -21,7 +21,7 @@ export const styles = {
     alignItems: 'center',
     flexDirection: 'column',
     boxShadow: '0px 4px 4px rgba(0,0,0,0.25)',
-    borderRadius: '15px',
+    borderRadius: '7px',
     marginTop: '15vh',
     marginBottom: '10vh',
 
@@ -29,12 +29,12 @@ export const styles = {
 
   access: {
     fontFamily: 'Montserrat',
-    fontSize: '48px',
+    fontSize: '30px',
     textAlign: 'center',
     fontStyle: 'normal',
     fontWeight: 400,
     letterSpacing: 0,
-    marginBottom: '5vh',
+    marginBottom: '2.5vh',
     marginTop: '5vh',
     textShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
   },
@@ -70,7 +70,7 @@ export const Center = styled.div`
     background: #FFFFFF;
     border: 3px solid #1F3541;
     box-sizing: border-box;
-    border-radius: 15px;
+    border-radius: 7px;
     margin-top: 15vh;
     margin-bottom: 10vh;
 

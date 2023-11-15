@@ -19,6 +19,7 @@ const NewUpdateCard = ({
   const [description, setDescription] = useState('');
   const [visibilityRestriction, setVisibilityRestriction] = useState(false);
   const [important, setImportant] = useState(false);
+  const [treatment, setTreatment] = useState(false);
   const [uploadFile, setUploadFile] = useState('');
   const [openModal, setOpenModal] = useState(false);
   const { user, startModal } = useProfileUser();
@@ -28,7 +29,7 @@ const NewUpdateCard = ({
       return;
     }
     createDemandUpdate(user.name, user.sector, user._id, description,
-      visibilityRestriction, demand._id, important, startModal);
+      visibilityRestriction, demand._id, important, treatment, startModal);
     getDemandApi();
     setDescription('');
   };
@@ -42,6 +43,7 @@ const NewUpdateCard = ({
         description: uploadFile.name,
         important,
         visibility: visibilityRestriction,
+        treatment,
       };
 
       DemandUploadFile(demand._id, startModal, uploadFile, info);
@@ -106,6 +108,21 @@ const NewUpdateCard = ({
                 )
               }
               label="Importante"
+            />
+          </CheckboxContainer>
+          <CheckboxContainer>
+            <FormControlLabel
+              control={
+                (
+                  <Checkbox
+                    value={treatment}
+                    onClick={() => setTreatment(!treatment)}
+                    inputProps={{ 'aria-label': 'Checkbox A' }}
+                    style={{ color: `${colors.navHeaders}` }}
+                  />
+                )
+              }
+              label="Atendimento"
             />
           </CheckboxContainer>
         </CheckboxDiv>
