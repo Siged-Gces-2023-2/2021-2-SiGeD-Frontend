@@ -11,6 +11,7 @@ import DataList from '../../Components/DataList';
 import GenericListScreen from '../../Components/GenericListScreen';
 import colors from '../../Constants/colors';
 import { useProfileUser } from '../../Context';
+import SpinnerComponent from '../../Components/SpinnerComponent';
 
 const ClientFeaturesScreen = () => {
   const { token, user, startModal } = useProfileUser();
@@ -46,6 +47,9 @@ const ClientFeaturesScreen = () => {
   }, [features]);
 
   const renderFeatures = () => {
+    if (!features) {
+      return <SpinnerComponent />;
+    }
     if (features?.length === 0 || filterFeatures?.length === 0) {
       return <h1>Sem resultados</h1>;
     }

@@ -11,6 +11,7 @@ import {
 import { useProfileUser } from '../../Context';
 import DataList from '../../Components/DataList';
 import ModalComp from '../../Components/ModalComp';
+import SpinnerComponent from '../../Components/SpinnerComponent';
 
 const WorkspaceListScreen = () => {
   const { token, startModal } = useProfileUser();
@@ -42,6 +43,9 @@ const WorkspaceListScreen = () => {
   }, [word]);
 
   const listWorkspaces = () => {
+    if (!workspaces) {
+      return <SpinnerComponent />;
+    }
     if (workspaces?.length === 0) {
       return <h1>Sem resultados</h1>;
     }

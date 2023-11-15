@@ -18,6 +18,7 @@ import DropdownComponent from '../../Components/DropdownComponent';
 import colors from '../../Constants/colors';
 import { useProfileUser } from '../../Context';
 import activeClient from '../StatisticsScreen/utils/alternateClient';
+import SpinnerComponent from '../../Components/SpinnerComponent';
 
 const ClientListScreen = () => {
   const { token, user, startModal } = useProfileUser();
@@ -103,6 +104,10 @@ const ClientListScreen = () => {
   }, [active]);
 
   const listClients = () => {
+    if (!clients) {
+      return <SpinnerComponent />;
+    }
+
     if (clients?.length === 0) {
       return <h1 style={styles.headerStyle}>Sem resultados</h1>;
     }
