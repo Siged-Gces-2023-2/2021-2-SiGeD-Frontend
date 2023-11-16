@@ -97,7 +97,7 @@ const ClientForms = ({
           >
             {!register
               ? <option selected disabled hidden value={cargoInicial}>{cargoInicial}</option>
-              : <option hidden disabled selected value> </option>}
+              : <option hidden disabled selected value>Selecione</option>}
             { cargos ? cargos.map((cargo) => (
               <option value={cargo.name}>{cargo.name}</option>
             )) : null }
@@ -117,7 +117,7 @@ const ClientForms = ({
           >
             {!register
               ? <option selected disabled hidden value={idLot}>{nomeLotacaoinicial}</option>
-              : <option hidden disabled selected value> </option>}
+              : <option hidden disabled selected value>Selecione</option>}
             {lotacao ? lotacao.map((lot) => (
               <option value={lot._id}>{lot.name}</option>
             )) : null}

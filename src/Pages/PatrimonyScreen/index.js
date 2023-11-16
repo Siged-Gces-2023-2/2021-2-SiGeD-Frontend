@@ -72,6 +72,7 @@ const PatrimonyScreen = () => {
 
   return (
     <>
+      <Button onClick={generatePDF}>Gerar PDF</Button>
       <GenericListScreen
         ButtonTitle="Novo Patrimônio"
         ButtonFunction={toggleModal}
@@ -109,10 +110,6 @@ const PatrimonyScreen = () => {
           />
         ) : null}
       </GenericListScreen>
-
-      <div style={{ position: 'fixed', bottom: '10px', right: '6%' }}>
-        <Button onClick={generatePDF}>Gerar PDF</Button>
-      </div>
     </>
   );
 };
