@@ -11,6 +11,7 @@ import {
 import DataList from '../../Components/DataList';
 import colors from '../../Constants/colors';
 import { useProfileUser } from '../../Context';
+import SpinnerComponent from '../../Components/SpinnerComponent';
 
 const ListCategories = () => {
   const { token, startModal } = useProfileUser();
@@ -51,6 +52,10 @@ const ListCategories = () => {
   }, [categories]);
 
   const renderCategories = () => {
+    if (!categories) {
+      return <SpinnerComponent />;
+    }
+
     if (categories?.length === 0) {
       return <h1>Sem resultados</h1>;
     }

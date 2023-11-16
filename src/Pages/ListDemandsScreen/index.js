@@ -15,6 +15,7 @@ import { getSectors } from '../../Services/Axios/sectorServices';
 import DropdownComponent from '../../Components/DropdownComponent';
 import colors from '../../Constants/colors';
 import { useProfileUser } from '../../Context';
+import SpinnerComponent from '../../Components/SpinnerComponent';
 
 const customStyles = {
   content: {
@@ -164,6 +165,9 @@ const ListDemandsScreen = () => {
   }, [dropdownYears]);
 
   const listDemands = () => {
+    if (!demands) {
+      return <SpinnerComponent />;
+    }
     if (!demands?.length) return <h1>Sem demandas cadastradas</h1>;
     if (!filteredDemandsFinal?.length) return <h1>Sem resultados para esses filtros</h1>;
     return filteredDemandsFinal?.map((demand) => (
