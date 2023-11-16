@@ -55,7 +55,7 @@ export const Button = styled.div`
   cursor: pointer;
   position: absolute;
   top: 25.5%;
-  right: 240px;
+  right: 270px;
   height: 50px;
   border-radius: 15px;
 
